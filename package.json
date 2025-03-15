@@ -1,0 +1,27 @@
+{
+    "name": "nodejs-video-generator",
+    "version": "1.0.0",
+    "description": "Application for generate Videos with templates",
+    "main": "server.js",
+    "type": "module",
+    "scripts": {
+        "dev": "node --watch --env-file=.env src/server.js",
+        "test": "echo \"Error: no test specified\" && exit 1"
+    },
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/henriqueritter/nodejs-video-generator.git"
+    },
+    "keywords": [
+        "ffmpeg"
+    ],
+    "author": "Henrique Ritter",
+    "license": "MIT",
+    "bugs": {
+        "url": "https://github.com/henriqueritter/nodejs-video-generator/issues"
+    },
+    "homepage": "https://github.com/henriqueritter/nodejs-video-generator#readme",
+    "dependencies": {
+        "express": "^4.21.2"
+    }
+}
