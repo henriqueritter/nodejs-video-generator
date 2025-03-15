@@ -4,10 +4,10 @@ const app = Express();
 
 app.use(Express.json());
 
-app.post('/', (request, response) => {
+app.post('/api/v1/videos/generate', (request, response) => {
     return response.send('Not Implemented');
 });
-app.get('/', (request, response) => {
+app.get('/api/v1/videos/generate', (request, response) => {
     return response.send('OK');
 });
 
