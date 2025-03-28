@@ -5,7 +5,6 @@ const templates = JSON.parse(fs.readFileSync("./src/templates.json", "utf8"));
 function listAllTemplatesService({ pageSize = 100, pageNumber = 1 }) {
   if (!templates || templates.length === 0)
     throw new Error("Error getting templates");
-  console.log(templates);
 
   const totalRecords = templates.length;
 

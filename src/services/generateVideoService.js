@@ -1,5 +1,13 @@
-function generateVideoService({ mediaInput, chosedVideoTemplate, chosedFilter }) {
+import { randomUUID } from "crypto";
 
-    const id = 1; //TODO implement generate
-    return { link: `${process.env.API_URL}/${id}` }
+function generateVideoService({
+  mediaInput,
+  chosedVideoTemplate,
+  chosedFilter,
+}) {
+  const id = randomUUID();
+
+  return { link: `${process.env.API_URL}/${id}` };
 }
+
+export { generateVideoService };

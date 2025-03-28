@@ -26,7 +26,7 @@ app.get("/api/v1/videos/templates", (request, response) => {
 
   const result = listAllTemplatesService({ pageSize, pageNumber });
 
-  return response.json(result);
+  return response.json({ data: result });
 });
 
 app.get("/api/v1/videos/:id", (request, response) => {
