@@ -1,3 +1,12 @@
 [
-
+  {
+        "id": "KNUCKLES_SIMPLE_APPROVE",
+        "description": "Video do prefeito Knuckles aprovando um papel de forma calma.",
+        "type": "video/mp4"
+    },
+    {
+        "id": "KNUCKLES_MASSIVE_APPROVE",
+        "description": "Video do prefeito Knuckles aprovando um papel com intensidade e repetição.",
+        "type": "video/mp4"
+    }
 ]
