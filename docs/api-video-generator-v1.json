@@ -1,0 +1,289 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "API Videos Generator - V1",
+    "description": "API que realiza a geração de edições de vídeos como exemplo a geração de memes a partir de templates prontos da aplicação e com midias como imagens fornecidas pelo consumidor. \n ## Dependências \n * Cloudflare R2: Responsável pelo armazenamento temporário das edições geradas.",
+    "version": "1.0.0",
+    "contact": {
+      "name": "Henrique Ritter",
+      "email": "henrique-ritter@hotmail.com"
+    }
+  },
+  "security": [
+    {
+      "UserTokenHeader": []
+    }
+  ],
+  "paths": {
+    "/videos/templates": {
+      "get": {
+        "summary": "Recurso responsável por retornar os templates de mídia disponíveis para os recursos de geração.",
+        "description": "Listagem de templates disponíveis.",
+        "tags": [
+          "Templates"
+        ],
+        "parameters": [
+          {
+            "name": "pageSize",
+            "in": "query",
+            "description": "Quantidade de itens por página",
+            "example": 100,
+            "schema": {
+              "type": "number",
+              "format": "int",
+              "default": 100
+            }
+          },
+          {
+            "name": "pageNumber",
+            "in": "query",
+            "description": "Número da página a ser retornada.",
+            "example": 1,
+            "schema": {
+              "type": "number",
+              "format": "int",
+              "default": 1
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Em caso de sucesso é retornado uma lista de com os templates disponíveis.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/listAllTemplatesResponseObj"
+                }
+              }
+            }
+          },
+          "500": {
+            "$ref": "#/components/responses/500"
+          }
+        }
+      }
+    },
+    "/videos/generate/image-overlay": {
+      "post": {
+        "tags": [
+          "Generators"
+        ],
+        "parameters": [
+          {
+            "name": "templateId",
+            "in": "query",
+            "required": true,
+            "description": "ID do template de media/video escolhido, para consultar todos os IDs possiveis busque o recurso GET",
+            "example": "KNUCKLES_SIMPLE_APPROVE",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "KNUCKLES_SIMPLE_APPROVE",
+                "KNUCKLES-MASSIVE_APPROVE",
+                "KNUCKLES_REJECT",
+                "KNUCKLES_NEVER_RETURN",
+                "KNUCKLES_CALM_ILLEGAL",
+                "KNUCKLES_ANGRY_ILLEGAL"
+              ]
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "image"
+                ],
+                "properties": {
+                  "image": {
+                    "description": "Imagem que será utilizada acima do template escolhido",
+                    "type": "string",
+                    "format": "binary"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Em caso de sucesso é retornado um Link para o vídeo gerado na CDN.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "link": {
+                          "type": "string",
+                          "example": "https://api.com/api/v1/videos/afd75a-ddas6785-fasd95.mp4"
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "422": {
+            "$ref": "#/components/responses/422"
+          },
+          "500": {
+            "$ref": "#/components/responses/500"
+          }
+        }
+      }
+    }
+  },
+  "servers": [
+    {
+      "url": "https://server.com/api/v1",
+      "description": "Endpoint da API"
+    }
+  ],
+  "components": {
+    "securitySchemes": {
+      "UserTokenHeader": {
+        "type": "http",
+        "scheme": "bearer"
+      }
+    },
+    "schemas": {
+      "listAllTemplatesResponseObj": {
+        "type": "object",
+        "description": "Objeto que contém os templates de midia disponíveis.",
+        "required": [
+          "data"
+        ],
+        "properties": {
+          "data": {
+            "required": [
+              "templates",
+              "pagination"
+            ],
+            "type": "object",
+            "description": "Lista de Templates.",
+            "properties": {
+              "templates": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "description": "Objeto que contém os dados de um template de mídia da aplicação utilizado nas edições.",
+                  "properties": {
+                    "id": {
+                      "type": "string",
+                      "description": "ID do template.",
+                      "example": "KNUCKLES_SIMPLE_APPROVE"
+                    },
+                    "description": {
+                      "type": "string",
+                      "description": "Descrição da mídia retornada.",
+                      "example": "Video do prefeito Knuckles aprovando um papel de forma calma."
+                    },
+                    "type": {
+                      "type": "string",
+                      "description": "Tipo da mídia",
+                      "example": "video/mp4"
+                    }
+                  }
+                }
+              },
+              "pagination": {
+                "type": "object",
+                "description": "Objeto que contém informações sobre a paginação.",
+                "properties": {
+                  "pageSize": {
+                    "type": "number",
+                    "format": "int",
+                    "description": "Quantidade de registros por página",
+                    "example": 1
+                  },
+                  "pageNumber": {
+                    "type": "number",
+                    "format": "int",
+                    "description": "Número da página pesquisada.",
+                    "example": 1
+                  },
+                  "totalPages": {
+                    "type": "number",
+                    "format": "int",
+                    "description": "Quantidade total de páginas disponíveis.",
+                    "example": 1
+                  },
+                  "totalRecords": {
+                    "type": "number",
+                    "format": "int",
+                    "description": "Quantidade total de templates disponíveis.",
+                    "example": 1
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "error": {
+        "description": "Objeto retornado na ocorrência de algum erro (4xx/5xx).",
+        "required": [
+          "error"
+        ],
+        "type": "object",
+        "properties": {
+          "error": {
+            "type": "object",
+            "properties": {
+              "message": {
+                "type": "string",
+                "description": "Mensagem de erro resumida"
+              }
+            }
+          }
+        },
+        "xml": {
+          "name": "xml"
+        }
+      }
+    },
+    "responses": {
+      "422": {
+        "description": "Unprocessable Entity",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/error"
+            },
+            "examples": {
+              "422-001": {
+                "value": {
+                  "error": {
+                    "code": "001",
+                    "message": "O Template informado é inválido."
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "500": {
+        "description": "Internal Server Error.",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/error"
+            },
+            "example": {
+              "error": {
+                "message": "Internal Server Error."
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
