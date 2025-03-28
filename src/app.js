@@ -7,11 +7,7 @@ const app = Express();
 app.use(Express.json());
 
 app.post("/api/v1/videos/generate/image-overlay", (request, response) => {
-  return response.send("Not Implemented");
-});
-
-app.get("/api/v1/videos", (request, response) => {
-  return response.send("OK");
+  return response.status(500).send("Not Implemented");
 });
 
 app.get("/api/v1/videos/templates", (request, response) => {
@@ -31,6 +27,10 @@ app.get("/api/v1/videos/templates", (request, response) => {
   const result = listAllTemplatesService({ pageSize, pageNumber });
 
   return response.json(result);
+});
+
+app.get("/api/v1/videos/:id", (request, response) => {
+  return response.status(500).send("Not Implemented");
 });
 
 export { app };
