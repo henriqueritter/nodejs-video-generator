@@ -1,13 +1,35 @@
 import { randomUUID } from "crypto";
+import { PassThrough } from "stream";
+import { existsSync } from "fs";
+import { processVideoStream } from "../providers/proccessVideoStreamFFMPEG.js";
 
 function generateVideoService({
   mediaInput,
-  chosedVideoTemplate,
-  chosedFilter,
+  chosedVideoTemplate = "a",
+  chosedFilter = "image-overlay",
 }) {
-  const id = randomUUID();
+  const videoTemplatePath = `./templates/${chosedVideoTemplate}.mp4`;
 
-  return { link: `${process.env.API_URL}/${id}` };
+  if (!existsSync(videoTemplatePath)) {
+    throw new Error("Invalid template.");
+  }
+
+  const outputFileName = randomUUID();
+
+  const stream = new PassThrough();
+  stream.end(mediaInput.buffer);
+
+  processVideoStream(
+    stream,
+    videoTemplatePath,
+    outputFileName,
+    chosedFilter,
+    () => {
+      console.log("Upload CDN");
+    }
+  );
+
+  return { link: `${process.env.API_URL}/api/v1/videos/${outputFileName}.mp4` };
 }
 
 export { generateVideoService };

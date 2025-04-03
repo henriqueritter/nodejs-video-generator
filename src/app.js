@@ -1,14 +1,34 @@
 import Express from "express";
+import multer from "multer";
 
 import { listAllTemplatesService } from "./services/listAllTemplatesService.js";
+import { generateVideoService } from "./services/generateVideoService.js";
 
 const app = Express();
+const upload = multer();
 
 app.use(Express.json());
 
-app.post("/api/v1/videos/generate/image-overlay", (request, response) => {
-  return response.status(500).send("Not Implemented");
-});
+app.post(
+  "/api/v1/videos/generate/image-overlay",
+  upload.single("image"),
+  async (request, response) => {
+    if (!request.file) {
+      return response.status(400).send("Image ausente");
+    }
+
+    try {
+      const result = generateVideoService({
+        mediaInput: request.file,
+        chosedFilter: "image-overlay",
+        chosedVideoTemplate: "approv_multiple",
+      });
+      return response.json(result);
+    } catch (e) {
+      return response.status(500).send({ error: { message: e.message } });
+    }
+  }
+);
 
 app.get("/api/v1/videos/templates", (request, response) => {
   const { pageSize, pageNumber } = request.query;
