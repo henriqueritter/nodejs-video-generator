@@ -19,21 +19,16 @@ function processVideoStream(
   chosedFilter,
   exportVideoCallback
 ) {
-  ffmpeg()
+  let videoOutputStream = ffmpeg()
     .input(inputStream)
     .input(videoTemplatePath)
     .complexFilter(filters[chosedFilter], "output")
     .outputOptions(["-map 1:a?", "-c:v libx264", "-c:a aac", "-b:a 192k"])
-    .output(`${outputVideoName}.mp4`)
-    .on("end", () => {
-      console.log("Processamento concluído.");
-      exportVideoCallback();
-    })
-    .on("error", (err) => {
-      console.error("Erro no FFmpeg:", err);
-      return { error: "Erro ao processar vídeo" };
-    })
-    .run();
+    .format("avi");
+
+  exportVideoCallback(videoOutputStream, `${outputVideoName}.mp4`);
+
+  return;
 }
 
 export { processVideoStream };

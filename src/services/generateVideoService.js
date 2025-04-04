@@ -2,6 +2,7 @@ import { randomUUID } from "crypto";
 import { PassThrough } from "stream";
 import { existsSync } from "fs";
 import { processVideoStream } from "../providers/proccessVideoStreamFFMPEG.js";
+import { saveFileOnDisk } from "../providers/saveFileOnDisk.js";
 
 function generateVideoService({
   mediaInput,
@@ -24,9 +25,7 @@ function generateVideoService({
     videoTemplatePath,
     outputFileName,
     chosedFilter,
-    () => {
-      console.log("Upload CDN");
-    }
+    saveFileOnDisk
   );
 
   return { link: `${process.env.API_URL}/api/v1/videos/${outputFileName}.mp4` };
