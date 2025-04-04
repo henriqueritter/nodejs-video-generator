@@ -21,12 +21,15 @@ function generateVideoService({
   const stream = new PassThrough();
   stream.end(mediaInput.buffer);
 
+  const exportVideoCallback =
+    process.env.SAVE_ON_DISK === "true" ? saveFileOnDisk : uploadVideoToCloud;
+
   processVideoStream(
     stream,
     videoTemplatePath,
     outputFileName,
     chosedFilter,
-    saveFileOnDisk
+    exportVideoCallback
   );
 
   return { link: `${process.env.API_URL}/api/v1/videos/${outputFileName}.mp4` };
