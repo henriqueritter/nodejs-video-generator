@@ -23,8 +23,15 @@ function processVideoStream(
     .input(inputStream)
     .input(videoTemplatePath)
     .complexFilter(filters[chosedFilter], "output")
-    .outputOptions(["-map 1:a?", "-c:v libx264", "-c:a aac", "-b:a 192k"])
-    .format("avi");
+    .outputOptions([
+      "-f mp4",
+      "-map 1:a?",
+      "-c:v libx264",
+      "-c:a aac",
+      "-b:a 192k",
+      "-movflags frag_keyframe+empty_moov",
+      "-preset ultrafast",
+    ]);
 
   exportVideoCallback(videoOutputStream, `${outputVideoName}.mp4`);
 

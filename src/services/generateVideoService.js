@@ -1,7 +1,8 @@
 import { randomUUID } from "crypto";
 import { PassThrough } from "stream";
 import { existsSync } from "fs";
-import { processVideoStream } from "../providers/proccessVideoStreamFFMPEG.js";
+import { processVideoStream } from "../providers/processVideoStreamFFMPEG.js";
+import { uploadVideoToCloud } from "../providers/uploadFileToCloudflareR2.js";
 import { saveFileOnDisk } from "../providers/saveFileOnDisk.js";
 
 function generateVideoService({

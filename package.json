@@ -22,6 +22,8 @@
     },
     "homepage": "https://github.com/henriqueritter/nodejs-video-generator#readme",
     "dependencies": {
+        "@aws-sdk/client-s3": "^3.782.0",
+        "@aws-sdk/lib-storage": "^3.782.0",
         "express": "^4.21.2",
         "fluent-ffmpeg": "^2.1.3",
         "multer": "^1.4.5-lts.2"
