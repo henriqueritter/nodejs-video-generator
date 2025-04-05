@@ -1,12 +1,52 @@
 [
   {
-        "id": "KNUCKLES_SIMPLE_APPROVE",
-        "description": "Video do prefeito Knuckles aprovando um papel de forma calma.",
-        "type": "video/mp4"
-    },
-    {
-        "id": "KNUCKLES_MASSIVE_APPROVE",
-        "description": "Video do prefeito Knuckles aprovando um papel com intensidade e repetição.",
-        "type": "video/mp4"
-    }
+    "id": "KNUCKLES_APPROVE_EXCELLENT_ARGUMENT",
+    "description": "Meme do prefeito Knuckles aprovando com a frase 'excellent argument'.",
+    "type": "video/mp4"
+  },
+  {
+    "id": "KNUCKLES_APPROVE_MULTIPLE_SIMPLE",
+    "description": "Meme do prefeito Knuckles aprovando multiplas vezes.",
+    "type": "video/mp4"
+  },
+  {
+    "id": "KNUCKLES_APPROVE_NO_CONSEQUENCE",
+    "description": "Meme do prefeito Knuckles esperando com a frase 'whats the worst could happen? see, no consequences' e aprovando.",
+    "type": "video/mp4"
+  },
+  {
+    "id": "KNUCKLES_APPROVE_MULTIPLE_FAST",
+    "description": "Meme do prefeito Knuckles aprovando diversas vezes de maneira acelerada.",
+    "type": "video/mp4"
+  },
+  {
+    "id": "KNUCKLES_APPROVE_MULTIPLE_SUSPENSE",
+    "description": "Meme do prefeito Knuckles fazendo um leve suspense e em seguida aprovando diversas vezes.",
+    "type": "video/mp4"
+  },
+  {
+    "id": "KNUCKLES_APPROVE_SIMPLE",
+    "description": "Meme do prefeito Knuckles aprovando com a frase 'Approved!'",
+    "type": "video/mp4"
+  },
+  {
+    "id": "KNUCKLES_NEUTRAL_IDONT_KNOW",
+    "description": "Meme do prefeito Knuckles não aprovando com a frase 'I dont know'.",
+    "type": "video/mp4"
+  },
+  {
+    "id": "KNUCKLES_REJECT_CALM_ILLEGAL",
+    "description": "Meme do prefeito Knuckles rejeitando a aprovação com a frase 'Its illegal.'",
+    "type": "video/mp4"
+  },
+  {
+    "id": "KNUCKLES_REJECT_ANGRY_ILLEGAL",
+    "description": "Meme do prefeito Knuckles rejeitando a aprovação com tom zangado com a frase 'Its now illegal.'",
+    "type": "video/mp4"
+  },
+  {
+    "id": "KNUCKLES_REJECT_NEVER_RETURN",
+    "description": "Meme do prefeito Knuckles rejeitando a aprovação com tom zangado com a frase 'Look at you, you were once so proud, go now and never return'.",
+    "type": "video/mp4"
+  }
 ]
