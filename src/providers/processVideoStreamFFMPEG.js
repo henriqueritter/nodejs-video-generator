@@ -23,6 +23,7 @@ function processVideoStream(
     .input(inputStream)
     .input(videoTemplatePath)
     .complexFilter(filters[chosedFilter], "output")
+    .format("mp4")
     .outputOptions([
       "-f mp4",
       "-map 1:a?",
@@ -31,7 +32,16 @@ function processVideoStream(
       "-b:a 192k",
       "-movflags frag_keyframe+empty_moov",
       "-preset ultrafast",
-    ]);
+    ])
+    .on("start", (cmd) => {
+      //console.log("FFmpeg cmd:", cmd)
+    })
+    .on("error", (err) => {
+      //console.error("Erro no FFmpeg:", err);
+    })
+    .on("end", () => {
+      //console.log("Vídeo finalizado.");
+    });
 
   exportVideoCallback(videoOutputStream, `${outputVideoName}.mp4`);
 

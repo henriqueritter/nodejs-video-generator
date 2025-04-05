@@ -13,6 +13,14 @@ app.post(
   "/api/v1/videos/generate/image-overlay",
   upload.single("image"),
   async (request, response) => {
+    const { templateId } = request.query;
+
+    if (!templateId) {
+      return response
+        .status(400)
+        .json({ error: { message: "templateId is required." } });
+    }
+
     if (!request.file) {
       return response.status(400).send("Image ausente");
     }
@@ -21,7 +29,7 @@ app.post(
       const result = generateVideoService({
         mediaInput: request.file,
         chosedFilter: "image-overlay",
-        chosedVideoTemplate: "approv_multiple",
+        chosedVideoTemplate: templateId,
       });
       return response.json(result);
     } catch (e) {
