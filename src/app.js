@@ -1,10 +1,13 @@
 import Express from "express";
 import multer from "multer";
+import cors from "cors";
 
 import { listAllTemplatesService } from "./services/listAllTemplatesService.js";
 import { generateVideoService } from "./services/generateVideoService.js";
 
 const app = Express();
+app.use(cors({ origin: "*" }));
+
 const upload = multer();
 
 app.use(Express.json());
@@ -61,6 +64,7 @@ app.get("/api/v1/videos/:id", (request, response) => {
   return response.status(500).send("Not Implemented");
 });
 
+/*
 setInterval(() => {
   const mem = process.memoryUsage();
   console.log(
@@ -77,7 +81,8 @@ setInterval(() => {
   /*if (global.gc) {
     console.log("Garbage Collector em acao");
     //global.gc(); // força coleta de lixo
-  }*/
+  }
 }, 1000);
+*/
 
 export { app };
