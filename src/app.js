@@ -61,4 +61,23 @@ app.get("/api/v1/videos/:id", (request, response) => {
   return response.status(500).send("Not Implemented");
 });
 
+setInterval(() => {
+  const mem = process.memoryUsage();
+  console.log(
+    `[${new Date().getTime() / 1000}] Memória usada: ${(
+      mem.rss /
+      1024 /
+      1024
+    ).toFixed(2)} MB Heap: ${(mem.heapUsed / 1024 / 1024).toFixed(2)} / ${(
+      mem.heapTotal /
+      1024 /
+      1024
+    ).toFixed(2)} MB`
+  );
+  /*if (global.gc) {
+    console.log("Garbage Collector em acao");
+    //global.gc(); // força coleta de lixo
+  }*/
+}, 1000);
+
 export { app };

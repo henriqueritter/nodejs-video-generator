@@ -1,8 +1,18 @@
 import { createWriteStream } from "fs";
+import { pipeline } from "stream/promises";
 
-function saveFileOnDisk(inputStream, outputFileName) {
+async function saveFileOnDisk(inputStream, outputFileName) {
   const outputStream = createWriteStream(`./${outputFileName}`);
-  inputStream.pipe(outputStream);
+  try {
+    await pipeline(inputStream, outputStream);
+  } catch (e) {
+    console.error("Erro at pipeline: ", e);
+    inputStream.destroy?.();
+    outputStream.destroy?.();
+  } finally {
+    inputStream.destroy?.();
+    outputStream.destroy?.();
+  }
 }
 
 export { saveFileOnDisk };
