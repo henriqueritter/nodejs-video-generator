@@ -1,5 +1,7 @@
 import { path as ffmpegPath } from "@ffmpeg-installer/ffmpeg";
 import ffmpeg from "fluent-ffmpeg";
+import { requestsQeue } from "../requestsQeue.js";
+
 ffmpeg.setFfmpegPath(ffmpegPath);
 
 const filters = {
@@ -21,7 +23,7 @@ function processVideoStream(
   chosedFilter,
   exportVideoCallback
 ) {
-  let videoOutputStream = ffmpeg()
+  const videoOutputStream = ffmpeg()
     .input(inputStream)
     .input(videoTemplatePath)
     .complexFilter(filters[chosedFilter], "output")
@@ -35,17 +37,26 @@ function processVideoStream(
       "-movflags frag_keyframe+empty_moov",
       "-preset ultrafast",
     ])
-    .on("start", (cmd) => {
-      //console.log("FFmpeg cmd:", cmd)
+    .on("start", () => {
+      requestsQeue[`${outputVideoName}.mp4`] = "PROCESSING";
     })
-    .on("error", (err) => {
-      //console.error("Erro no FFmpeg:", err);
+    .on("error", (e) => {
+      inputStream.destroy?.();
+      console.error("ffmpeg error: ", e);
     })
     .on("end", () => {
-      //console.log("Vídeo finalizado.");
+      inputStream.destroy?.();
+      requestsQeue[`${outputVideoName}.mp4`] = "PROCESSED";
     });
 
-  exportVideoCallback(videoOutputStream, `${outputVideoName}.mp4`);
+  exportVideoCallback(videoOutputStream, `${outputVideoName}.mp4`)
+    .then(() => {
+      inputStream.destroy?.();
+      videoOutputStream.destroy?.();
+    })
+    .catch((e) => {
+      console.log("Error exporting video to callback: ", e);
+    });
 
   return;
 }

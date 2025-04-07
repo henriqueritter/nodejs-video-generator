@@ -66,7 +66,7 @@
     "/videos/generate/image-overlay": {
       "post": {
         "tags": [
-          "Generators"
+          "Video Processing"
         ],
         "parameters": [
           {
@@ -109,7 +109,7 @@
         },
         "responses": {
           "200": {
-            "description": "Em caso de sucesso é retornado um Link para o vídeo gerado na CDN.",
+            "description": "Em caso de sucesso é retornado um Link para consultar o status do vídeo na API.",
             "content": {
               "application/json": {
                 "schema": {
@@ -131,6 +131,89 @@
           },
           "422": {
             "$ref": "#/components/responses/422"
+          },
+          "500": {
+            "$ref": "#/components/responses/500"
+          }
+        }
+      }
+    },
+    "/videos/{id}": {
+      "get": {
+        "summary": "Recurso responsável por consultar um video que foi gerado ou está sendo processado.",
+        "description": "Consulta o status de um video que está sendo processado.",
+        "tags": [
+          "Video Processing"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "description": "ID do video gerado",
+            "example": "883afe83-4820-4e6b-b6ef-d3a67b8fc2de.mp4",
+            "schema": {
+              "type": "string",
+              "format": "UUID + File Extension"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Em caso de sucesso é retornado um objeto contendo o status do video e se este estiver finalizado também será retornado um link para consumir o video.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/searchVideoResponseObj"
+                },
+                "examples": {
+                  "VIDEO_WAITING_TO_PROCESS": {
+                    "summary": "Vídeo na Fila Aguardando Processamento.",
+                    "value": {
+                      "data": {
+                        "status": "PENDING"
+                      }
+                    }
+                  },
+                  "VIDEO_PROCESSING": {
+                    "summary": "Processamento do Vídeo em Andamento.",
+                    "value": {
+                      "data": {
+                        "status": "PROCESSING",
+                      }
+                    }
+                  },
+                  "VIDEO_PROCESSED_WAITING_UPLOAD": {
+                    "summary": "Processamento do Vídeo Concluido, Aguardando Upload.",
+                    "value": {
+                      "data": {
+                        "status": "PROCESSED"
+                      }
+                    }
+                  },
+                  "VIDEO_UPLOADING": {
+                    "summary": "Iniciando Upload do Vído para CDN.",
+                    "value": {
+                      "data": {
+                        "status": "UPLOADING"
+                      }
+                    }
+                  },
+                  "VIDEO_PROCESSING_COMPLETED": {
+                    "summary": "Processamento e Upload Concluídos com Sucesso.",
+                    "value": {
+                      "data": {
+                        "status": "FINISHED",
+                        "link": "https://cdn/afd75a-ddas6785-fasd95.mp4"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "$ref": "#/components/responses/404"
           },
           "500": {
             "$ref": "#/components/responses/500"
@@ -226,6 +309,42 @@
           }
         }
       },
+      "searchVideoResponseObj": {
+        "type": "object",
+        "description": "Objeto que contém o resultado de um video processado.",
+        "required": [
+          "data"
+        ],
+        "properties": {
+          "data": {
+            "required": [
+              "status"
+            ],
+            "type": "object",
+            "properties": {
+              "status": {
+                "type": "string",
+                "description": "Status de processamento do video. \n Os valores possíveis são: \n * PENDING: Video Aguardando o inicio do processamento; \n * PROCESSING: Processamento do vídeo iniciado; \n * PROCESSING_FAILED: O Processamento falhou e não será continuado; \n * PROCESSED: Vídeo processado com sucesso; \n * UPLOADING: Upload do vídeo para a CDN em andamento; \n * UPLOAD_FAILED: O Upload para a CDN falhou e não será realizado; \n * FINISHED: Processamento e Upload do vídeo concluídos com sucesso;",
+                "enum": [
+                  "PENDING",
+                  "PROCESSING",
+                  "PROCESSING_FAILED",
+                  "PROCESSED",
+                  "UPLOADING",
+                  "UPLOAD_FAILED",
+                  "FINISHED"
+                ],
+                "example": "FINISHED"
+              },
+              "link":{
+                "type": "string",
+                "description": "Link para consumo do video",
+                "example": "https://cdn/afd75a-ddas6785-fasd95.mp4"
+              }
+            }
+          }
+        }
+      },
       "error": {
         "description": "Objeto retornado na ocorrência de algum erro (4xx/5xx).",
         "required": [
@@ -249,6 +368,21 @@
       }
     },
     "responses": {
+      "404": {
+        "description": "Resource Not Found",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/error"
+            },
+            "example": {
+              "error": {
+                "message": "Not Found."
+              }
+            }
+          }
+        }
+      },
       "422": {
         "description": "Unprocessable Entity",
         "content": {

@@ -1,44 +1,48 @@
-import { S3Client } from "@aws-sdk/client-s3";
 import { Upload } from "@aws-sdk/lib-storage";
+import { finished } from "stream/promises";
+import { s3Client } from "./cloudflareR2Client.js";
+import { requestsQeue } from "../requestsQeue.js";
 
 // Configurações do Cloudflare R2
-const {
-  R2_ACCESS_KEY_ID,
-  R2_SECRET_ACCESS_KEY,
-  R2_ACCOUNT_ID,
-  R2_BUCKET_NAME,
-} = process.env;
-
-const s3Client = new S3Client({
-  region: "auto",
-  endpoint: `https://${R2_ACCOUNT_ID}.r2.cloudflarestorage.com`,
-  credentials: {
-    accessKeyId: R2_ACCESS_KEY_ID,
-    secretAccessKey: R2_SECRET_ACCESS_KEY,
-  },
-});
+const { R2_BUCKET_NAME } = process.env;
 
 async function uploadVideoToCloud(inputStream, outputFileName) {
   const stream = inputStream.pipe({ end: true });
 
-  try {
-    const upload = new Upload({
-      client: s3Client,
-      params: {
-        Bucket: R2_BUCKET_NAME,
-        Key: outputFileName,
-        Body: stream,
-        ContentType: "video/mp4",
-      },
-    });
+  stream.on("error", (e) => {
+    console.error("Error on stream: ", e);
+    inputStream.destroy?.();
+  });
+  let upload = new Upload({
+    client: s3Client,
+    params: {
+      Bucket: R2_BUCKET_NAME,
+      Key: outputFileName,
+      Body: stream,
+      ContentType: "video/mp4",
+    },
+  });
 
+  try {
     upload.on("httpUploadProgress", (progress) => {
-      //console.log(progress);
+      requestsQeue[`${outputFileName}`] = "UPLOADING";
     });
 
     await upload.done();
+    await finished(stream);
   } catch (err) {
-    console.error("Upload failed:", err);
+    inputStream.destroy?.();
+    stream.destroy?.();
+    s3Client.destroy?.();
+    upload = null;
+    console.error("Upload to R2 failed:", err);
+    requestsQeue[`${outputFileName}`] = "UPLOAD_FAILED";
+  } finally {
+    inputStream.destroy?.();
+    stream.destroy?.();
+    s3Client.destroy?.();
+    upload = null;
+    requestsQeue[`${outputFileName}`] = "FINISHED";
   }
 }
 

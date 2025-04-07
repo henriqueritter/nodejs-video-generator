@@ -1,10 +1,14 @@
 import Express from "express";
 import multer from "multer";
+import cors from "cors";
 
 import { listAllTemplatesService } from "./services/listAllTemplatesService.js";
 import { generateVideoService } from "./services/generateVideoService.js";
+import { checkVideoProcessingStatus } from "./services/checkVideoProcessingStatusService.js";
 
 const app = Express();
+app.use(cors({ origin: "*" }));
+
 const upload = multer();
 
 app.use(Express.json());
@@ -54,11 +58,23 @@ app.get("/api/v1/videos/templates", (request, response) => {
 
   const result = listAllTemplatesService({ pageSize, pageNumber });
 
-  return response.json({ data: result });
+  return response.json({
+    data: { result },
+  });
 });
 
 app.get("/api/v1/videos/:id", (request, response) => {
-  return response.status(500).send("Not Implemented");
+  const { id } = request.params;
+  const result = checkVideoProcessingStatus(id);
+
+  if (!result)
+    return response
+      .status(404)
+      .json({ error: { message: "Video Not Found." } });
+
+  return response.json({
+    data: result,
+  });
 });
 
 export { app };
