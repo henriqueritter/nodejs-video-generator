@@ -171,7 +171,7 @@
                     "summary": "Vídeo na Fila Aguardando Processamento.",
                     "value": {
                       "data": {
-                        "status": "WAITING"
+                        "status": "PENDING"
                       }
                     }
                   },
@@ -324,9 +324,9 @@
             "properties": {
               "status": {
                 "type": "string",
-                "description": "Status de processamento do video. \n Os valores possíveis são: \n * WAITING: Video Aguardando o inicio do processamento; \n * PROCESSING: Processamento do vídeo iniciado; \n * PROCESSING_FAILED: O Processamento falhou e não será continuado; \n * PROCESSED: Vídeo processado com sucesso; \n * UPLOADING: Upload do vídeo para a CDN em andamento; \n * UPLOAD_FAILED: O Upload para a CDN falhou e não será realizado; \n * FINISHED: Processamento e Upload do vídeo concluídos com sucesso;",
+                "description": "Status de processamento do video. \n Os valores possíveis são: \n * PENDING: Video Aguardando o inicio do processamento; \n * PROCESSING: Processamento do vídeo iniciado; \n * PROCESSING_FAILED: O Processamento falhou e não será continuado; \n * PROCESSED: Vídeo processado com sucesso; \n * UPLOADING: Upload do vídeo para a CDN em andamento; \n * UPLOAD_FAILED: O Upload para a CDN falhou e não será realizado; \n * FINISHED: Processamento e Upload do vídeo concluídos com sucesso;",
                 "enum": [
-                  "WAITING",
+                  "PENDING",
                   "PROCESSING",
                   "PROCESSING_FAILED",
                   "PROCESSED",
