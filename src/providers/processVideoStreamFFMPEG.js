@@ -1,6 +1,6 @@
 import { path as ffmpegPath } from "@ffmpeg-installer/ffmpeg";
 import ffmpeg from "fluent-ffmpeg";
-import { requestsQeue } from "../requestsQeue.js";
+import { requestsQueue } from "../requestsQueue.js";
 
 ffmpeg.setFfmpegPath(ffmpegPath);
 
@@ -38,7 +38,7 @@ function processVideoStream(
       "-preset ultrafast",
     ])
     .on("start", () => {
-      requestsQeue[`${outputVideoName}.mp4`] = "PROCESSING";
+      requestsQueue[`${outputVideoName}.mp4`] = "PROCESSING";
     })
     .on("error", (e) => {
       inputStream.destroy?.();
@@ -46,7 +46,7 @@ function processVideoStream(
     })
     .on("end", () => {
       inputStream.destroy?.();
-      requestsQeue[`${outputVideoName}.mp4`] = "PROCESSED";
+      requestsQueue[`${outputVideoName}.mp4`] = "PROCESSED";
     });
 
   exportVideoCallback(videoOutputStream, `${outputVideoName}.mp4`)

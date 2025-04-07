@@ -4,7 +4,7 @@ import { existsSync } from "fs";
 import { processVideoStream } from "../providers/processVideoStreamFFMPEG.js";
 import { uploadVideoToCloud } from "../providers/uploadFileToCloudflareR2.js";
 import { saveFileOnDisk } from "../providers/saveFileOnDisk.js";
-import { requestsQeue } from "../requestsQeue.js";
+import { requestsQueue } from "../requestsQueue.js";
 
 function generateVideoService({
   mediaInput,
@@ -25,7 +25,7 @@ function generateVideoService({
   const exportVideoCallback =
     process.env.SAVE_ON_DISK === "true" ? saveFileOnDisk : uploadVideoToCloud;
 
-  requestsQeue[`${outputFileName}.mp4`] = "PENDING";
+  requestsQueue[`${outputFileName}.mp4`] = "PENDING";
 
   processVideoStream(
     stream,

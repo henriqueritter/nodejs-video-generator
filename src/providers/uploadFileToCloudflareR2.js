@@ -1,7 +1,7 @@
 import { Upload } from "@aws-sdk/lib-storage";
 import { finished } from "stream/promises";
 import { s3Client } from "./cloudflareR2Client.js";
-import { requestsQeue } from "../requestsQeue.js";
+import { requestsQueue } from "../requestsQueue.js";
 
 // Configurações do Cloudflare R2
 const { R2_BUCKET_NAME } = process.env;
@@ -25,7 +25,7 @@ async function uploadVideoToCloud(inputStream, outputFileName) {
 
   try {
     upload.on("httpUploadProgress", (progress) => {
-      requestsQeue[`${outputFileName}`] = "UPLOADING";
+      requestsQueue[`${outputFileName}`] = "UPLOADING";
     });
 
     await upload.done();
@@ -36,13 +36,13 @@ async function uploadVideoToCloud(inputStream, outputFileName) {
     s3Client.destroy?.();
     upload = null;
     console.error("Upload to R2 failed:", err);
-    requestsQeue[`${outputFileName}`] = "UPLOAD_FAILED";
+    requestsQueue[`${outputFileName}`] = "UPLOAD_FAILED";
   } finally {
     inputStream.destroy?.();
     stream.destroy?.();
     s3Client.destroy?.();
     upload = null;
-    requestsQeue[`${outputFileName}`] = "FINISHED";
+    requestsQueue[`${outputFileName}`] = "FINISHED";
   }
 }
 

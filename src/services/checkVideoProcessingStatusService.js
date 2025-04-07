@@ -1,7 +1,7 @@
-import { requestsQeue } from "../requestsQeue.js";
+import { requestsQueue } from "../requestsQueue.js";
 
 function checkVideoProcessingStatus(id) {
-  const status = requestsQeue[id];
+  const status = requestsQueue[id];
 
   if (!status) return null;
 

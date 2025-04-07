@@ -1,0 +1,3 @@
+const requestsQueue = {};
+
+export { requestsQueue };
