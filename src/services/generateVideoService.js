@@ -35,7 +35,11 @@ function generateVideoService({
     exportVideoCallback
   );
 
-  return { link: `${process.env.API_URL}/api/v1/videos/${outputFileName}.mp4` };
+  return {
+    data: {
+      link: `${process.env.API_URL}/api/v1/videos/${outputFileName}.mp4`,
+    },
+  };
 }
 
 export { generateVideoService };
