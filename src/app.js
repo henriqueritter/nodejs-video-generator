@@ -4,6 +4,7 @@ import cors from "cors";
 
 import { listAllTemplatesService } from "./services/listAllTemplatesService.js";
 import { generateVideoService } from "./services/generateVideoService.js";
+import { checkVideoProcessingStatus } from "./services/checkVideoProcessingStatusService.js";
 
 const app = Express();
 app.use(cors({ origin: "*" }));
@@ -57,32 +58,23 @@ app.get("/api/v1/videos/templates", (request, response) => {
 
   const result = listAllTemplatesService({ pageSize, pageNumber });
 
-  return response.json({ data: result });
+  return response.json({
+    data: { result },
+  });
 });
 
 app.get("/api/v1/videos/:id", (request, response) => {
-  return response.status(500).send("Not Implemented");
-});
+  const { id } = request.params;
+  const result = checkVideoProcessingStatus(id);
 
-/*
-setInterval(() => {
-  const mem = process.memoryUsage();
-  console.log(
-    `[${new Date().getTime() / 1000}] Memória usada: ${(
-      mem.rss /
-      1024 /
-      1024
-    ).toFixed(2)} MB Heap: ${(mem.heapUsed / 1024 / 1024).toFixed(2)} / ${(
-      mem.heapTotal /
-      1024 /
-      1024
-    ).toFixed(2)} MB`
-  );
-  /*if (global.gc) {
-    console.log("Garbage Collector em acao");
-    //global.gc(); // força coleta de lixo
-  }
-}, 1000);
-*/
+  if (!result)
+    return response
+      .status(404)
+      .json({ error: { message: "Video Not Found." } });
+
+  return response.json({
+    data: result,
+  });
+});
 
 export { app };

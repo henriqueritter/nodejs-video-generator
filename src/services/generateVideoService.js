@@ -4,10 +4,11 @@ import { existsSync } from "fs";
 import { processVideoStream } from "../providers/processVideoStreamFFMPEG.js";
 import { uploadVideoToCloud } from "../providers/uploadFileToCloudflareR2.js";
 import { saveFileOnDisk } from "../providers/saveFileOnDisk.js";
+import { requestsQeue } from "../requestsQeue.js";
 
 function generateVideoService({
   mediaInput,
-  chosedVideoTemplate = "a",
+  chosedVideoTemplate = "KNUCKLES_APPROVE_EXCELLENT_ARGUMENT",
   chosedFilter = "image-overlay",
 }) {
   const videoTemplatePath = `./templates/${chosedVideoTemplate}.mp4`;
@@ -24,6 +25,8 @@ function generateVideoService({
   const exportVideoCallback =
     process.env.SAVE_ON_DISK === "true" ? saveFileOnDisk : uploadVideoToCloud;
 
+  requestsQeue[`${outputFileName}.mp4`] = "PENDING";
+
   processVideoStream(
     stream,
     videoTemplatePath,
@@ -32,7 +35,7 @@ function generateVideoService({
     exportVideoCallback
   );
 
-  return { link: `https://${process.env.R2_BUCKET_URL}/${outputFileName}.mp4` };
+  return { link: `${process.env.API_URL}/api/v1/videos/${outputFileName}.mp4` };
 }
 
 export { generateVideoService };

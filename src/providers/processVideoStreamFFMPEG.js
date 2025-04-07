@@ -1,5 +1,6 @@
 import { path as ffmpegPath } from "@ffmpeg-installer/ffmpeg";
 import ffmpeg from "fluent-ffmpeg";
+import { requestsQeue } from "../requestsQeue.js";
 
 ffmpeg.setFfmpegPath(ffmpegPath);
 
@@ -36,22 +37,22 @@ function processVideoStream(
       "-movflags frag_keyframe+empty_moov",
       "-preset ultrafast",
     ])
-    .on("start", (cmd) => {})
+    .on("start", () => {
+      requestsQeue[`${outputVideoName}.mp4`] = "PROCESSING";
+    })
     .on("error", (e) => {
       inputStream.destroy?.();
       console.error("ffmpeg error: ", e);
     })
     .on("end", () => {
       inputStream.destroy?.();
-      console.log("Video process finished.");
+      requestsQeue[`${outputVideoName}.mp4`] = "PROCESSED";
     });
 
   exportVideoCallback(videoOutputStream, `${outputVideoName}.mp4`)
     .then(() => {
       inputStream.destroy?.();
       videoOutputStream.destroy?.();
-
-      console.log("Generated video: ", outputVideoName);
     })
     .catch((e) => {
       console.log("Error exporting video to callback: ", e);
