@@ -77,4 +77,8 @@ app.get("/api/v1/videos/:id", (request, response) => {
   });
 });
 
+app.get("/api/v1/healthcheck", (request, response) => {
+  return response.send();
+});
+
 export { app };
