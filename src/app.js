@@ -1,5 +1,5 @@
 import Express from "express";
-import multer from "multer";
+import fileUpload from "./middlewares/fileUpload.js";
 import cors from "cors";
 
 import { listAllTemplatesService } from "./services/listAllTemplatesService.js";
@@ -9,13 +9,11 @@ import { checkVideoProcessingStatus } from "./services/checkVideoProcessingStatu
 const app = Express();
 app.use(cors({ origin: "*" }));
 
-const upload = multer();
-
 app.use(Express.json());
 
 app.post(
   "/api/v1/videos/generate/image-overlay",
-  upload.single("image"),
+  fileUpload.single("image"),
   async (request, response) => {
     const { templateId } = request.query;
 
