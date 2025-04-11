@@ -2,7 +2,6 @@ import Express from "express";
 import fileUpload from "./middlewares/fileUpload.js";
 import cors from "cors";
 
-import { checkVideoProcessingStatus } from "./services/checkVideoProcessingStatusService.js";
 import { generateVideoController } from "./controllers/generateVideoController.js";
 import { listAllTemplatesController } from "./controllers/listAllTemplatesController.js";
 import { checkVideoProcessingStatusController } from "./controllers/checkVideoProcessingStatusController.js";
